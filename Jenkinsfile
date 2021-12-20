@@ -3,8 +3,8 @@ node {
         git 'https://github.com/soumyaraha/my-app'
      }
     stage('complile package') {
-        sh 'mvn clean package'
-        sh 'mv target/*.war target/soumya.war'
+        sh 'mvn package'
+        
      }
     stage('Deploy to Tomcat') {
         sshagent(['tomcat-dev']) {
