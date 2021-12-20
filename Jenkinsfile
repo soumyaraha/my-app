@@ -3,11 +3,16 @@ node {
         git 'https://github.com/soumyaraha/my-app'
      }
     stage('complile package') {
-        sh 'mvn package'
+        sh 'mvn clean package'
+        sh 'mv target/*.war target/soumya.war'
      }
     stage('Deploy to Tomcat') {
         sshagent(['tomcat-dev']) {
-        sh 'scp -o StrictHostKeyChecking=no target/*.war appuser@192.168.43.208:/opt/tomcat10/webapps'
+        sh """
+            scp -o StrictHostKeyChecking=no target/*.war appuser@192.168.43.208:/opt/tomcat10/webapps
+            ssh appuser@192.168.43.208 /opt/tomcat10/bin/shutdown.sh
+            ssh appuser@192.168.43.208 /opt/tomcat10/bin/startup.sh
+            """
     }
     }
     stage('Email Notification') {
